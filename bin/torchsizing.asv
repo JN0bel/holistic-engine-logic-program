@@ -1,0 +1,41 @@
+% %% TADPOLE Torch Sizing
+% % Authors: Jonah Nobel
+% % First Created: 11/11/2023
+% % Last Updated: 11/11/2023
+
+%In SI units
+
+P_c = 150 * 6894.757;   %Pascals
+P_e = 14.7 * 6894.757;  %Pascals
+fuel = "C3H8O,2propanol";
+fuel_weight = 0;
+fuel_temp = 273.15;     %Kelvin
+oxidizer = "O2";        %Kelvin
+oxidizer_temp = 273.15;
+OF = 1;
+CEA_input_name = 'torchfile';
+m_dot_chamber = 2.72 * 0.4535924;   %kg
+m_dot_torch = 0.05 * 0.4535924;     %m_dot_chamber * 0.015  * 0.4535924 %Kilograms
+m_dot_ox = m_dot_torch/2;           %kg
+m_dot_fuel = m_dot_torch/2;         %kg
+c_d = 0.7;
+ox_density = 18.27;                 %@ 2KSI, change for actual tank pressure
+fuel_density = 786;                 %kg/m^3
+ox_feed_pressure = 200 * 6894.757;  %pascals
+fuel_feed_pressure = 200 * 6894.757;
+
+[c_star_t, ~, ~, M_t, gamma_t, P_g_t, T_g_t, ~, mu_g_t, Pr_g_t, ~, ~, ~, cp_g_t] = RunCEA(P_c, P_e, fuel, fuel_weight, fuel_temp, oxidizer, oxidizer_temp, OF, 0, 0, 0, 0, 0, CEA_input_name);
+
+A_t = c_star_t * m_dot_torch / P_c; %In SI units
+A_t_inches = A_t * 1550;
+throat_diameter = sqrt(A_t_inches / pi) * 2 %inches^2
+
+ox_area = m_dot_ox / (c_d * sqrt(2*ox_density*(ox_feed_pressure-P_c))); %M^2
+ox_area_inches = ox_area * 1550;                    %inches
+ox_diameter = sqrt(ox_area_inches / pi) * 2         %inches
+
+fuel_area = m_dot_fuel / (c_d * sqrt(2*fuel_density*(fuel_feed_pressure-P_c))); %M^2
+fuel_area_inches = fuel_area * 1550;                %inches
+fuel_diameter = sqrt(fuel_area_inches / pi) * 2     %inches^2
+
+
