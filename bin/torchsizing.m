@@ -2,24 +2,24 @@
 % % Authors: Jonah Nobel
 % % First Created: 11/11/2023
 % % Last Updated: 11/11/2023
+% % Calculations done in SI units
 
 %%% Definitions
-%In SI units
-
 
 %%Inputs
 chamber_pressure_psi = 150;                                                 %Psia
 exit_pressure_psi = 14.7;                           
 ox_feed_pressure_psi = 550;
 fuel_feed_pressure_psi = 550;
+percent_chamber_m_dot = 1.5;                                                % % of mass flow
 fuel_inlet_diameter_in = 1/4;
 c_d = 0.7;                                                                  %Discharge coeficcient from literature (Sutton, p279)
 OF = 1.0;
 
 %%Selected orifices
 %Possible orifice sizes: https://www.mcmaster.com/products/orifices/threaded-flow-control-orifices/body-material~stainless-steel-1/body-material~316-stainless-steel/thread-type~unf-1/
-chosen_ox_diameter_in = 0.020;                                              %in
-chosen_fuel_diameter_in = 0.021;                                            %in
+chosen_ox_diameter_in = 0.018;                                              %in
+chosen_fuel_diameter_in = 0.020;                                            %in
 
 fuel = "C3H8O,2propanol";
 oxidizer = "O2";
@@ -48,7 +48,7 @@ ox_gamma = 1.40;
 
 %m_dot_definitions
 m_dot_chamber = 2.72 * 0.4535924;                                           %kg
-m_dot_torch = 0.05 * 0.4535924;                                             %m_dot_chamber * 0.015  * 0.4535924 %Kilograms
+m_dot_torch = (percent_chamber_m_dot/100) * m_dot_chamber;                                    %m_dot_chamber * 0.015  * 0.4535924 %Kilograms
 m_dot_fuel = m_dot_torch/(1+OF);                                            %kg
 m_dot_ox = m_dot_fuel*OF;                                                   %kg
 
@@ -105,4 +105,4 @@ fprintf("Calculations from chosen orifice diameters and feed pressure:\n")
 fprintf("Ox massflow is %.4f kg/s, and fuel mass flow is %.4f kg/s.\n", new_ox_m_dot, new_fuel_m_dot)
 fprintf("Torch mass flow is %.4f kg/s, %.2f%% of total engine mass flow.\n", new_ox_m_dot + new_fuel_m_dot, 100*(new_ox_m_dot + new_fuel_m_dot)/m_dot_chamber)
 fprintf("OF ratio is now %.4f at c-star %.0f.\n", new_of, new_c_star)
-fprintf("New throat diameter is %.4f inches at chamber pressure %.1f psia.\n", new_throat_diameter, chamber_pressure_psi)  
+fprintf("New throat diameter is %.4f inches at chamber pressure %.1f psia.\n", new_throat_diameter, chamber_pressure_psi) 
